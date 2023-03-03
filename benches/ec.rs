@@ -14,7 +14,7 @@ fn bench_ec(c: &mut Criterion) {
 
     // ---- Mul
 
-    g.bench_function(BenchmarkId::new("ark-secp256k1", "Mul"), |b| {
+    g.bench_function(BenchmarkId::new("Mul", "ark-secp256k1"), |b| {
         let s = ark_secp256k1::Fr::rand(&mut OsRng);
         let g = ark_secp256k1::Affine::generator();
 
@@ -24,7 +24,7 @@ fn bench_ec(c: &mut Criterion) {
         })
     });
 
-    g.bench_function(BenchmarkId::new("ark-secp256r1", "Mul"), |b| {
+    g.bench_function(BenchmarkId::new("Mul", "ark-secp256r1"), |b| {
         let s = ark_secp256r1::Fr::rand(&mut OsRng);
         let g = ark_secp256r1::Affine::generator();
 
@@ -34,7 +34,7 @@ fn bench_ec(c: &mut Criterion) {
         })
     });
 
-    g.bench_function(BenchmarkId::new("ark-bls12-381/G1", "Mul"), |b| {
+    g.bench_function(BenchmarkId::new("Mul", "ark-bls12-381/G1"), |b| {
         let g = ark_bls12_381::G1Affine::generator();
         let s = ark_bls12_381::Fr::rand(&mut OsRng);
 
@@ -44,7 +44,7 @@ fn bench_ec(c: &mut Criterion) {
         })
     });
 
-    g.bench_function(BenchmarkId::new("ark-bls12-381/G2", "Mul"), |b| {
+    g.bench_function(BenchmarkId::new("Mul", "ark-bls12-381/G2"), |b| {
         let g = ark_bls12_381::G2Affine::generator();
         let s = ark_bls12_381::Fr::rand(&mut OsRng);
 
@@ -54,7 +54,7 @@ fn bench_ec(c: &mut Criterion) {
         })
     });
 
-    g.bench_function(BenchmarkId::new("k256", "Mul"), |b| {
+    g.bench_function(BenchmarkId::new("Mul", "k256"), |b| {
         let g = k256::AffinePoint::GENERATOR;
         let s = k256::Scalar::random(&mut OsRng);
 
@@ -64,7 +64,7 @@ fn bench_ec(c: &mut Criterion) {
         })
     });
 
-    g.bench_function(BenchmarkId::new("p256", "Mul"), |b| {
+    g.bench_function(BenchmarkId::new("Mul", "p256"), |b| {
         let g = p256::AffinePoint::GENERATOR;
         let s = p256::Scalar::random(&mut OsRng);
 
@@ -74,7 +74,7 @@ fn bench_ec(c: &mut Criterion) {
         })
     });
 
-    g.bench_function(BenchmarkId::new("bls12-381/G1", "Mul"), |b| {
+    g.bench_function(BenchmarkId::new("Mul", "bls12-381/G1"), |b| {
         let g = bls12_381::G1Affine::generator();
         let s = bls12_381::Scalar::random(&mut OsRng);
 
@@ -84,7 +84,7 @@ fn bench_ec(c: &mut Criterion) {
         })
     });
 
-    g.bench_function(BenchmarkId::new("bls12-381/G2", "Mul"), |b| {
+    g.bench_function(BenchmarkId::new("Mul", "bls12-381/G2"), |b| {
         let g = bls12_381::G2Affine::generator();
         let s = bls12_381::Scalar::random(&mut OsRng);
 
@@ -96,7 +96,7 @@ fn bench_ec(c: &mut Criterion) {
 
     // ---- Mul Projective
 
-    g.bench_function(BenchmarkId::new("ark-secp256k1", "Mul-Projective"), |b| {
+    g.bench_function(BenchmarkId::new("Mul", "ark-secp256k1/Projective"), |b| {
         let s = ark_secp256k1::Fr::rand(&mut OsRng);
         let g = ark_secp256k1::Affine::generator();
         let u = g.mul(s);
@@ -107,7 +107,7 @@ fn bench_ec(c: &mut Criterion) {
         })
     });
 
-    g.bench_function(BenchmarkId::new("ark-secp256r1", "Mul-Projective"), |b| {
+    g.bench_function(BenchmarkId::new("Mul", "ark-secp256r1/Projective"), |b| {
         let s = ark_secp256r1::Fr::rand(&mut OsRng);
         let g = ark_secp256r1::Affine::generator();
         let u = g.mul(s);
@@ -119,7 +119,7 @@ fn bench_ec(c: &mut Criterion) {
     });
 
     g.bench_function(
-        BenchmarkId::new("ark-bls12-381/G1", "Mul-Projective"),
+        BenchmarkId::new("Mul", "ark-bls12-381/G1/Projective"),
         |b| {
             let s = ark_bls12_381::Fr::rand(&mut OsRng);
             let g = ark_bls12_381::G1Affine::generator();
@@ -133,7 +133,7 @@ fn bench_ec(c: &mut Criterion) {
     );
 
     g.bench_function(
-        BenchmarkId::new("ark-bls12-381/G2", "Mul-Projective"),
+        BenchmarkId::new("Mul", "ark-bls12-381/G2/Projective"),
         |b| {
             let s = ark_bls12_381::Fr::rand(&mut OsRng);
             let g = ark_bls12_381::G2Affine::generator();
@@ -146,7 +146,7 @@ fn bench_ec(c: &mut Criterion) {
         },
     );
 
-    g.bench_function(BenchmarkId::new("k256", "Mul-Projective"), |b| {
+    g.bench_function(BenchmarkId::new("Mul", "k256/Projective"), |b| {
         let g = k256::AffinePoint::GENERATOR;
         let s = k256::Scalar::random(&mut OsRng);
         let u = g.mul(s);
@@ -157,7 +157,7 @@ fn bench_ec(c: &mut Criterion) {
         })
     });
 
-    g.bench_function(BenchmarkId::new("p256", "Mul-Projective"), |b| {
+    g.bench_function(BenchmarkId::new("Mul", "p256/Projective"), |b| {
         let g = p256::AffinePoint::GENERATOR;
         let s = p256::Scalar::random(&mut OsRng);
         let u = g.mul(s);
@@ -168,7 +168,7 @@ fn bench_ec(c: &mut Criterion) {
         })
     });
 
-    g.bench_function(BenchmarkId::new("bls12-381/G1", "Mul-Projective"), |b| {
+    g.bench_function(BenchmarkId::new("Mul", "bls12-381/G1/Projective"), |b| {
         let g = bls12_381::G1Affine::generator();
         let s = bls12_381::Scalar::random(&mut OsRng);
         let u = g.mul(s);
@@ -179,7 +179,7 @@ fn bench_ec(c: &mut Criterion) {
         })
     });
 
-    g.bench_function(BenchmarkId::new("bls12-381/G2", "Mul-Projective"), |b| {
+    g.bench_function(BenchmarkId::new("Mul", "bls12-381/G2/Projective"), |b| {
         let g = bls12_381::G2Affine::generator();
         let s = bls12_381::Scalar::random(&mut OsRng);
         let u = g.mul(s);
@@ -190,9 +190,95 @@ fn bench_ec(c: &mut Criterion) {
         })
     });
 
+    // ---- Mul by zero
+
+    g.bench_function(BenchmarkId::new("Mul", "ark-secp256k1/Zero"), |b| {
+        let s = ark_secp256k1::Fr::rand(&mut OsRng);
+        let g = ark_secp256k1::Affine::generator();
+        let u = g.mul(s);
+
+        b.iter(|| {
+            let r = u * ark_secp256k1::Fr::zero();
+            let _ = black_box(r);
+        })
+    });
+
+    g.bench_function(BenchmarkId::new("Mul", "ark-secp256r1/Zero"), |b| {
+        let s = ark_secp256r1::Fr::rand(&mut OsRng);
+        let g = ark_secp256r1::Affine::generator();
+        let u = g.mul(s);
+
+        b.iter(|| {
+            let r = u * ark_secp256r1::Fr::zero();
+            let _ = black_box(r);
+        })
+    });
+
+    g.bench_function(BenchmarkId::new("Mul", "ark-bls12-381/G1/Zero"), |b| {
+        let s = ark_bls12_381::Fr::rand(&mut OsRng);
+        let g = ark_bls12_381::G1Affine::generator();
+        let u = g.mul(s);
+
+        b.iter(|| {
+            let r = u * ark_bls12_381::Fr::zero();
+            let _ = black_box(r);
+        })
+    });
+
+    g.bench_function(BenchmarkId::new("Mul", "ark-bls12-381/G2/Zero"), |b| {
+        let s = ark_bls12_381::Fr::rand(&mut OsRng);
+        let g = ark_bls12_381::G2Affine::generator();
+        let u = g.mul(s);
+
+        b.iter(|| {
+            let r = u * ark_bls12_381::Fr::zero();
+            let _ = black_box(r);
+        })
+    });
+
+    g.bench_function(BenchmarkId::new("Mul", "k256/Zero"), |b| {
+        let s = k256::Scalar::random(&mut OsRng);
+        let u = k256::AffinePoint::GENERATOR.mul(s);
+
+        b.iter(|| {
+            let r = u * k256::Scalar::ZERO;
+            let _ = black_box(r);
+        })
+    });
+
+    g.bench_function(BenchmarkId::new("Mul", "p256/Zero"), |b| {
+        let s = p256::Scalar::random(&mut OsRng);
+        let u = p256::AffinePoint::GENERATOR.mul(s);
+
+        b.iter(|| {
+            let r = u * p256::Scalar::ZERO;
+            let _ = black_box(r);
+        })
+    });
+
+    g.bench_function(BenchmarkId::new("Mul", "bls12-381/G1/Zero"), |b| {
+        let s = bls12_381::Scalar::random(&mut OsRng);
+        let u = bls12_381::G1Affine::generator().mul(s);
+
+        b.iter(|| {
+            let r = u * bls12_381::Scalar::ZERO;
+            let _ = black_box(r);
+        })
+    });
+
+    g.bench_function(BenchmarkId::new("Mul", "bls12-381/G2/Zero"), |b| {
+        let s = bls12_381::Scalar::random(&mut OsRng);
+        let u = bls12_381::G2Affine::generator().mul(s);
+
+        b.iter(|| {
+            let r = u * bls12_381::Scalar::ZERO;
+            let _ = black_box(r);
+        })
+    });
+
     // ---- Add
 
-    g.bench_function(BenchmarkId::new("ark-secp256k1", "Add"), |b| {
+    g.bench_function(BenchmarkId::new("Add", "ark-secp256k1"), |b| {
         let s = ark_secp256k1::Fr::rand(&mut OsRng);
         let g = ark_secp256k1::Affine::generator();
         let u = g.mul(s);
@@ -203,7 +289,7 @@ fn bench_ec(c: &mut Criterion) {
         })
     });
 
-    g.bench_function(BenchmarkId::new("ark-secp256r1", "Add"), |b| {
+    g.bench_function(BenchmarkId::new("Add", "ark-secp256r1"), |b| {
         let s = ark_secp256r1::Fr::rand(&mut OsRng);
         let g = ark_secp256r1::Affine::generator();
         let u = g.mul(s);
@@ -214,7 +300,7 @@ fn bench_ec(c: &mut Criterion) {
         })
     });
 
-    g.bench_function(BenchmarkId::new("ark-bls12-381/G1", "Add"), |b| {
+    g.bench_function(BenchmarkId::new("Add", "ark-bls12-381/G1"), |b| {
         let s = ark_bls12_381::Fr::rand(&mut OsRng);
         let g = ark_bls12_381::G1Affine::generator();
         let u = g.mul(s);
@@ -225,7 +311,7 @@ fn bench_ec(c: &mut Criterion) {
         })
     });
 
-    g.bench_function(BenchmarkId::new("ark-bls12-381/G2", "Add"), |b| {
+    g.bench_function(BenchmarkId::new("Add", "ark-bls12-381/G2"), |b| {
         let s = ark_bls12_381::Fr::rand(&mut OsRng);
         let g = ark_bls12_381::G2Affine::generator();
         let u = g.mul(s);
@@ -236,7 +322,7 @@ fn bench_ec(c: &mut Criterion) {
         })
     });
 
-    g.bench_function(BenchmarkId::new("k256", "Add"), |b| {
+    g.bench_function(BenchmarkId::new("Add", "k256"), |b| {
         let s = k256::Scalar::random(&mut OsRng);
         let g = k256::AffinePoint::GENERATOR;
         let u = k256::AffinePoint::GENERATOR.mul(s);
@@ -247,7 +333,7 @@ fn bench_ec(c: &mut Criterion) {
         })
     });
 
-    g.bench_function(BenchmarkId::new("p256", "Add"), |b| {
+    g.bench_function(BenchmarkId::new("Add", "p256"), |b| {
         let s = p256::Scalar::random(&mut OsRng);
         let g = p256::AffinePoint::GENERATOR;
         let u = p256::AffinePoint::GENERATOR.mul(s);
@@ -258,7 +344,7 @@ fn bench_ec(c: &mut Criterion) {
         })
     });
 
-    g.bench_function(BenchmarkId::new("bls12-381/G1", "Add"), |b| {
+    g.bench_function(BenchmarkId::new("Add", "bls12-381/G1"), |b| {
         let s = bls12_381::Scalar::random(&mut OsRng);
         let g = bls12_381::G1Affine::generator();
         let u = g.mul(s);
@@ -269,7 +355,7 @@ fn bench_ec(c: &mut Criterion) {
         })
     });
 
-    g.bench_function(BenchmarkId::new("bls12-381/G2", "Add"), |b| {
+    g.bench_function(BenchmarkId::new("Add", "bls12-381/G2"), |b| {
         let s = bls12_381::Scalar::random(&mut OsRng);
         let g = bls12_381::G2Affine::generator();
         let u = g.mul(s);
@@ -282,7 +368,7 @@ fn bench_ec(c: &mut Criterion) {
 
     // ---- To Affine
 
-    g.bench_function(BenchmarkId::new("ark-secp256k1", "ToAffine"), |b| {
+    g.bench_function(BenchmarkId::new("ToAffine", "ark-secp256k1"), |b| {
         let s = ark_secp256k1::Fr::rand(&mut OsRng);
         let g = ark_secp256k1::Affine::generator();
         let u = g.mul(s);
@@ -293,7 +379,7 @@ fn bench_ec(c: &mut Criterion) {
         })
     });
 
-    g.bench_function(BenchmarkId::new("ark-secp256r1", "ToAffine"), |b| {
+    g.bench_function(BenchmarkId::new("ToAffine", "ark-secp256r1"), |b| {
         let s = ark_secp256r1::Fr::rand(&mut OsRng);
         let g = ark_secp256r1::Affine::generator();
         let u = g.mul(s);
@@ -304,7 +390,7 @@ fn bench_ec(c: &mut Criterion) {
         })
     });
 
-    g.bench_function(BenchmarkId::new("ark-bls12-381/G1", "ToAffine"), |b| {
+    g.bench_function(BenchmarkId::new("ToAffine", "ark-bls12-381/G1"), |b| {
         let s = ark_bls12_381::Fr::rand(&mut OsRng);
         let g = ark_bls12_381::G1Affine::generator();
         let u = g.mul(s);
@@ -315,7 +401,7 @@ fn bench_ec(c: &mut Criterion) {
         })
     });
 
-    g.bench_function(BenchmarkId::new("ark-bls12-381/G2", "ToAffine"), |b| {
+    g.bench_function(BenchmarkId::new("ToAffine", "ark-bls12-381/G2"), |b| {
         let s = ark_bls12_381::Fr::rand(&mut OsRng);
         let g = ark_bls12_381::G2Affine::generator();
         let u = g.mul(s);
@@ -326,7 +412,7 @@ fn bench_ec(c: &mut Criterion) {
         })
     });
 
-    g.bench_function(BenchmarkId::new("k256", "ToAffine"), |b| {
+    g.bench_function(BenchmarkId::new("ToAffine", "k256"), |b| {
         let s = k256::Scalar::random(&mut OsRng);
         let u = k256::AffinePoint::GENERATOR.mul(s);
 
@@ -336,7 +422,7 @@ fn bench_ec(c: &mut Criterion) {
         })
     });
 
-    g.bench_function(BenchmarkId::new("p256", "ToAffine"), |b| {
+    g.bench_function(BenchmarkId::new("ToAffine", "p256"), |b| {
         let s = p256::Scalar::random(&mut OsRng);
         let u = p256::AffinePoint::GENERATOR.mul(s);
 
@@ -346,7 +432,7 @@ fn bench_ec(c: &mut Criterion) {
         })
     });
 
-    g.bench_function(BenchmarkId::new("bls12-381/G1", "ToAffine"), |b| {
+    g.bench_function(BenchmarkId::new("ToAffine", "bls12-381/G1"), |b| {
         let s = bls12_381::Scalar::random(&mut OsRng);
         let u = bls12_381::G1Affine::generator().mul(s);
 
@@ -356,7 +442,7 @@ fn bench_ec(c: &mut Criterion) {
         })
     });
 
-    g.bench_function(BenchmarkId::new("bls12-381/G2", "ToAffine"), |b| {
+    g.bench_function(BenchmarkId::new("ToAffine", "bls12-381/G2"), |b| {
         let s = bls12_381::Scalar::random(&mut OsRng);
         let u = bls12_381::G2Affine::generator().mul(s);
 
@@ -366,95 +452,9 @@ fn bench_ec(c: &mut Criterion) {
         })
     });
 
-    // ---- Mul by zero
-
-    g.bench_function(BenchmarkId::new("ark-secp256k1", "MulByZero"), |b| {
-        let s = ark_secp256k1::Fr::rand(&mut OsRng);
-        let g = ark_secp256k1::Affine::generator();
-        let u = g.mul(s);
-
-        b.iter(|| {
-            let r = u * ark_secp256k1::Fr::zero();
-            let _ = black_box(r);
-        })
-    });
-
-    g.bench_function(BenchmarkId::new("ark-secp256r1", "MulByZero"), |b| {
-        let s = ark_secp256r1::Fr::rand(&mut OsRng);
-        let g = ark_secp256r1::Affine::generator();
-        let u = g.mul(s);
-
-        b.iter(|| {
-            let r = u * ark_secp256r1::Fr::zero();
-            let _ = black_box(r);
-        })
-    });
-
-    g.bench_function(BenchmarkId::new("ark-bls12-381/G1", "MulByZero"), |b| {
-        let s = ark_bls12_381::Fr::rand(&mut OsRng);
-        let g = ark_bls12_381::G1Affine::generator();
-        let u = g.mul(s);
-
-        b.iter(|| {
-            let r = u * ark_bls12_381::Fr::zero();
-            let _ = black_box(r);
-        })
-    });
-
-    g.bench_function(BenchmarkId::new("ark-bls12-381/G2", "MulByZero"), |b| {
-        let s = ark_bls12_381::Fr::rand(&mut OsRng);
-        let g = ark_bls12_381::G2Affine::generator();
-        let u = g.mul(s);
-
-        b.iter(|| {
-            let r = u * ark_bls12_381::Fr::zero();
-            let _ = black_box(r);
-        })
-    });
-
-    g.bench_function(BenchmarkId::new("k256", "MulByZero"), |b| {
-        let s = k256::Scalar::random(&mut OsRng);
-        let u = k256::AffinePoint::GENERATOR.mul(s);
-
-        b.iter(|| {
-            let r = u * k256::Scalar::ZERO;
-            let _ = black_box(r);
-        })
-    });
-
-    g.bench_function(BenchmarkId::new("p256", "MulByZero"), |b| {
-        let s = p256::Scalar::random(&mut OsRng);
-        let u = p256::AffinePoint::GENERATOR.mul(s);
-
-        b.iter(|| {
-            let r = u * p256::Scalar::ZERO;
-            let _ = black_box(r);
-        })
-    });
-
-    g.bench_function(BenchmarkId::new("bls12-381/G1", "MulByZero"), |b| {
-        let s = bls12_381::Scalar::random(&mut OsRng);
-        let u = bls12_381::G1Affine::generator().mul(s);
-
-        b.iter(|| {
-            let r = u * bls12_381::Scalar::ZERO;
-            let _ = black_box(r);
-        })
-    });
-
-    g.bench_function(BenchmarkId::new("bls12-381/G2", "MulByZero"), |b| {
-        let s = bls12_381::Scalar::random(&mut OsRng);
-        let u = bls12_381::G2Affine::generator().mul(s);
-
-        b.iter(|| {
-            let r = u * bls12_381::Scalar::ZERO;
-            let _ = black_box(r);
-        })
-    });
-
     // ---- Pedersen Commitment
 
-    g.bench_function(BenchmarkId::new("ark-secp256k1", "Pedersen"), |b| {
+    g.bench_function(BenchmarkId::new("Pedersen", "ark-secp256k1"), |b| {
         let s = ark_secp256k1::Fr::rand(&mut OsRng);
         let g = ark_secp256k1::Affine::generator();
         let h = g.mul(s);
@@ -467,7 +467,7 @@ fn bench_ec(c: &mut Criterion) {
         })
     });
 
-    g.bench_function(BenchmarkId::new("ark-secp256r1", "Pedersen"), |b| {
+    g.bench_function(BenchmarkId::new("Pedersen", "ark-secp256r1"), |b| {
         let s = ark_secp256r1::Fr::rand(&mut OsRng);
         let g = ark_secp256r1::Affine::generator();
         let h = g.mul(s);
@@ -480,7 +480,7 @@ fn bench_ec(c: &mut Criterion) {
         })
     });
 
-    g.bench_function(BenchmarkId::new("k256", "Pedersen"), |b| {
+    g.bench_function(BenchmarkId::new("Pedersen", "k256"), |b| {
         let s = k256::Scalar::random(&mut OsRng);
         let g = k256::ProjectivePoint::GENERATOR;
         let h = g.mul(s);
@@ -493,7 +493,7 @@ fn bench_ec(c: &mut Criterion) {
         })
     });
 
-    g.bench_function(BenchmarkId::new("p256", "Pedersen"), |b| {
+    g.bench_function(BenchmarkId::new("Pedersen", "p256"), |b| {
         let s = p256::Scalar::random(&mut OsRng);
         let g = p256::ProjectivePoint::GENERATOR;
         let h = g.mul(s);
@@ -508,7 +508,7 @@ fn bench_ec(c: &mut Criterion) {
 
     // BLS pairing
 
-    g.bench_function(BenchmarkId::new("ark-bls12-381", "Pairing"), |b| {
+    g.bench_function(BenchmarkId::new("Pairing", "ark-bls12-381"), |b| {
         let s = ark_bls12_381::Fr::rand(&mut OsRng);
         let g = ark_bls12_381::G1Affine::generator();
         let u = ark_bls12_381::G2Affine::generator().mul(&s).into_affine();
@@ -519,7 +519,7 @@ fn bench_ec(c: &mut Criterion) {
         })
     });
 
-    g.bench_function(BenchmarkId::new("bls12-381", "Pairing"), |b| {
+    g.bench_function(BenchmarkId::new("Pairing", "bls12-381"), |b| {
         let s = bls12_381::Scalar::random(&mut OsRng);
         let g = bls12_381::G1Affine::generator();
         let u = bls12_381::G2Affine::from(&bls12_381::G2Affine::generator().mul(s));
