@@ -1,7 +1,6 @@
 use benchmarks::*;
 use criterion::*;
 use rand::{RngCore, SeedableRng};
-use rand_core_5::RngCore as RngCore5;
 
 fn bench_rand(c: &mut Criterion) {
     let mut g = c.benchmark_group("Rand");
