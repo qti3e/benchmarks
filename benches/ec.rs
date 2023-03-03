@@ -34,6 +34,16 @@ fn bench_ec(c: &mut Criterion) {
         })
     });
 
+    g.bench_function(BenchmarkId::new("Mul", "ark-curve25519"), |b| {
+        let s = ark_curve25519::Fr::rand(&mut OsRng);
+        let g = ark_curve25519::EdwardsAffine::generator();
+
+        b.iter(|| {
+            let r = g.mul(s);
+            let _ = black_box(r);
+        })
+    });
+
     g.bench_function(BenchmarkId::new("Mul", "ark-bls12-381/G1"), |b| {
         let g = ark_bls12_381::G1Affine::generator();
         let s = ark_bls12_381::Fr::rand(&mut OsRng);
@@ -110,6 +120,17 @@ fn bench_ec(c: &mut Criterion) {
     g.bench_function(BenchmarkId::new("Mul", "ark-secp256r1/Projective"), |b| {
         let s = ark_secp256r1::Fr::rand(&mut OsRng);
         let g = ark_secp256r1::Affine::generator();
+        let u = g.mul(s);
+
+        b.iter(|| {
+            let r = u.mul(s);
+            let _ = black_box(r);
+        })
+    });
+
+    g.bench_function(BenchmarkId::new("Mul", "ark-curve25519/Projective"), |b| {
+        let s = ark_curve25519::Fr::rand(&mut OsRng);
+        let g = ark_curve25519::EdwardsAffine::generator();
         let u = g.mul(s);
 
         b.iter(|| {
@@ -214,6 +235,17 @@ fn bench_ec(c: &mut Criterion) {
         })
     });
 
+    g.bench_function(BenchmarkId::new("Mul", "ark-curve25519/Zero"), |b| {
+        let s = ark_curve25519::Fr::rand(&mut OsRng);
+        let g = ark_curve25519::EdwardsAffine::generator();
+        let u = g.mul(s);
+
+        b.iter(|| {
+            let r = u * ark_curve25519::Fr::zero();
+            let _ = black_box(r);
+        })
+    });
+
     g.bench_function(BenchmarkId::new("Mul", "ark-bls12-381/G1/Zero"), |b| {
         let s = ark_bls12_381::Fr::rand(&mut OsRng);
         let g = ark_bls12_381::G1Affine::generator();
@@ -292,6 +324,17 @@ fn bench_ec(c: &mut Criterion) {
     g.bench_function(BenchmarkId::new("Add", "ark-secp256r1"), |b| {
         let s = ark_secp256r1::Fr::rand(&mut OsRng);
         let g = ark_secp256r1::Affine::generator();
+        let u = g.mul(s);
+
+        b.iter(|| {
+            let r = g + u;
+            let _ = black_box(r);
+        })
+    });
+
+    g.bench_function(BenchmarkId::new("Add", "ark-curve25519"), |b| {
+        let s = ark_curve25519::Fr::rand(&mut OsRng);
+        let g = ark_curve25519::EdwardsAffine::generator();
         let u = g.mul(s);
 
         b.iter(|| {
@@ -390,6 +433,17 @@ fn bench_ec(c: &mut Criterion) {
         })
     });
 
+    g.bench_function(BenchmarkId::new("ToAffine", "ark-curve25519"), |b| {
+        let s = ark_curve25519::Fr::rand(&mut OsRng);
+        let g = ark_curve25519::EdwardsAffine::generator();
+        let u = g.mul(s);
+
+        b.iter(|| {
+            let r = u.into_affine();
+            let _ = black_box(r);
+        })
+    });
+
     g.bench_function(BenchmarkId::new("ToAffine", "ark-bls12-381/G1"), |b| {
         let s = ark_bls12_381::Fr::rand(&mut OsRng);
         let g = ark_bls12_381::G1Affine::generator();
@@ -473,6 +527,19 @@ fn bench_ec(c: &mut Criterion) {
         let h = g.mul(s);
         let r = ark_secp256r1::Fr::rand(&mut OsRng);
         let m = ark_secp256r1::Fr::rand(&mut OsRng);
+
+        b.iter(|| {
+            let r = h * m + g * r;
+            let _ = black_box(r);
+        })
+    });
+
+    g.bench_function(BenchmarkId::new("Pedersen", "ark-curve25519"), |b| {
+        let s = ark_curve25519::Fr::rand(&mut OsRng);
+        let g = ark_curve25519::EdwardsAffine::generator();
+        let h = g.mul(s);
+        let r = ark_curve25519::Fr::rand(&mut OsRng);
+        let m = ark_curve25519::Fr::rand(&mut OsRng);
 
         b.iter(|| {
             let r = h * m + g * r;
