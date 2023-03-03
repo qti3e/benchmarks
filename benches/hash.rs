@@ -9,6 +9,8 @@ fn bench_hash(c: &mut Criterion) {
     g.sample_size(10);
 
     for (size, label) in size(GB) {
+        g.throughput(Throughput::Bytes(size as u64));
+
         g.bench_with_input(BenchmarkId::new("Sha256", &label), &size, |b, i| {
             b.iter(|| {
                 let mut sha = Sha256::new();
