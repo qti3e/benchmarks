@@ -48,6 +48,22 @@ fn bench_xor(c: &mut Criterion) {
         })
     });
 
+    g.bench_function("u128", |b| {
+        let mut result = mk_vec(GB);
+        b.iter(|| {
+            unsafe {
+                let result_as_u128_slice: &mut Vec<u128> = std::mem::transmute(&mut result);
+                let v1_as_u128_slice: &Vec<u128> = std::mem::transmute(&v1);
+                let v2_as_u128_slice: &Vec<u128> = std::mem::transmute(&v2);
+                for i in 0..GB / 16 {
+                    *result_as_u128_slice.get_unchecked_mut(i) =
+                        v1_as_u128_slice.get_unchecked(i) ^ v2_as_u128_slice.get_unchecked(i);
+                }
+            }
+            black_box(&result);
+        })
+    });
+
     g.bench_function("packed_simd::u64x8", |b| {
         let mut result = mk_vec(GB);
         b.iter(|| {
@@ -286,7 +302,52 @@ fn bench_xor(c: &mut Criterion) {
         })
     });
 
+    g.bench_function("ppv_lite85", |b| {
+        let mut result = mk_vec(GB);
+        b.iter(|| {
+            let mut offset = 0;
+            // let result_raw_ptr = result.as_mut_ptr();
+            // let v1_raw_ptr = v1.as_ptr();
+            // let v2_raw_ptr = v2.as_ptr();
+
+            loop {
+                if offset >= GB {
+                    break;
+                }
+
+                // let r_mut_slice =
+                //     &mut *std::ptr::slice_from_raw_parts_mut(result_raw_ptr.add(offset), 32);
+                // let v1_slice = &*std::ptr::slice_from_raw_parts(v1_raw_ptr.add(offset), 32);
+                // let v2_slice = &*std::ptr::slice_from_raw_parts(v2_raw_ptr.add(offset), 32);
+
+                let end = offset + 32;
+                ppv_lite86_impl::xor(&mut result[offset..end], &v1[offset..end], &v2[offset..end]);
+
+                offset += 32;
+            }
+            black_box(&result);
+        })
+    });
+
     g.finish();
+}
+
+mod ppv_lite86_impl {
+    use ppv_lite86::{dispatch, dispatch_light256, Machine, StoreBytes};
+
+    dispatch_light256!(m, Mach, {
+        fn xor_internal(result: &mut [u8], a: &[u8], b: &[u8]) {
+            let mut a_simd: Mach::u64x4 = m.read_le(a);
+            let b_simd: Mach::u64x4 = m.read_le(b);
+            a_simd ^= b_simd;
+            a_simd.write_le(result);
+        }
+    });
+
+    #[inline(always)]
+    pub fn xor(result: &mut [u8], a: &[u8], b: &[u8]) {
+        xor_internal(result, a, b);
+    }
 }
 
 criterion_group!(benches, bench_xor);
