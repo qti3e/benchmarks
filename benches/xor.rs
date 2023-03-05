@@ -20,6 +20,35 @@ fn bench_xor(c: &mut Criterion) {
         })
     });
 
+    g.bench_function("naive-bounded", |b| {
+        let mut result = mk_vec(GB);
+        b.iter(|| {
+            let res = &mut result[0..GB];
+            let a = &v1[0..GB];
+            let b = &v2[0..GB];
+
+            for i in 0..GB {
+                res[i] = b[i] ^ a[i];
+            }
+
+            black_box(&result);
+        })
+    });
+
+    g.bench_function("naive-assert", |b| {
+        let mut result = mk_vec(GB);
+        b.iter(|| {
+            assert!(result.len() <= GB);
+            assert!(v1.len() <= GB);
+            assert!(v2.len() <= GB);
+
+            for i in 0..GB {
+                result[i] = v1[i] ^ v2[i];
+            }
+            black_box(&result);
+        })
+    });
+
     g.bench_function("unchecked", |b| {
         let mut result = mk_vec(GB);
         b.iter(|| {
@@ -348,6 +377,10 @@ mod ppv_lite86_impl {
     pub fn xor(result: &mut [u8], a: &[u8], b: &[u8]) {
         xor_internal(result, a, b);
     }
+}
+
+mod simd_ins {
+    //``    use std::arch::
 }
 
 criterion_group!(benches, bench_xor);
