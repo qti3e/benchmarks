@@ -420,9 +420,5 @@ mod ppv_lite86_impl {
     }
 }
 
-mod simd_ins {
-    //``    use std::arch::
-}
-
 criterion_group!(benches, bench_xor);
 criterion_main!(benches);
