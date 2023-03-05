@@ -1,3 +1,5 @@
+#![feature(core_intrinsics)]
+
 use benchmarks::*;
 use criterion::*;
 
@@ -45,6 +47,45 @@ fn bench_xor(c: &mut Criterion) {
             for i in 0..GB {
                 result[i] = v1[i] ^ v2[i];
             }
+            black_box(&result);
+        })
+    });
+
+    g.bench_function("naive-assume", |b| {
+        let mut result = mk_vec(GB);
+        b.iter(|| {
+            unsafe {
+                std::intrinsics::assume(result.len() == GB);
+                std::intrinsics::assume(v1.len() == GB);
+                std::intrinsics::assume(v2.len() == GB);
+            }
+
+            for i in 0..GB {
+                unsafe {
+                    std::intrinsics::assume(result.len() == GB);
+                    std::intrinsics::assume(v1.len() == GB);
+                    std::intrinsics::assume(v2.len() == GB);
+                }
+                result[i] = v1[i] ^ v2[i];
+            }
+            black_box(&result);
+        })
+    });
+
+    g.bench_function("chunks-exact", |b| {
+        const CHUNK_SIZE: usize = 64;
+
+        let mut result = mk_vec(GB);
+        b.iter(|| {
+            for (r, (a, b)) in result
+                .chunks_exact_mut(CHUNK_SIZE)
+                .zip(v1.chunks_exact(CHUNK_SIZE).zip(v2.chunks_exact(CHUNK_SIZE)))
+            {
+                for i in 0..CHUNK_SIZE {
+                    r[i] = a[i] ^ b[i];
+                }
+            }
+
             black_box(&result);
         })
     });
