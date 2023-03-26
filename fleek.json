@@ -1,6 +1,5 @@
 {
   "id": "clfpvu2mu0000mi08ezd3cvlc",
   "name": "benchmarks",
-  "distDir": "./target/criterion/",
-  "buildCommand": "cargo bench"
+  "distDir": "./target/criterion/"
 }

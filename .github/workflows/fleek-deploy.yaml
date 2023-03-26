@@ -19,6 +19,8 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          toolchain: stable
+          toolchain: nightly
+      - name: Run benchmarks
+        run: cargo bench
       - name: Build & deploy sites
         run: fleek sites deploy
