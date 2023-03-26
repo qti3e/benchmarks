@@ -3,19 +3,21 @@
 use benchmarks::*;
 use criterion::*;
 
-/// This benchmark tries to xor two 1GB vector and store the result into a 3rd vector.
+/// This benchmark tries to xor two 256KiB vector and store the result into a 3rd vector.
 fn bench_xor(c: &mut Criterion) {
+    const SIZE: usize = 256 * KB;
+
     let mut g = c.benchmark_group("XOR");
     g.sample_size(20);
-    g.throughput(Throughput::Bytes(GB as u64));
+    g.throughput(Throughput::Bytes(SIZE as u64));
 
-    let v1 = random_vec(GB);
-    let v2 = random_vec(GB);
+    let v1 = random_vec(SIZE);
+    let v2 = random_vec(SIZE);
 
     g.bench_function("naive", |b| {
-        let mut result = mk_vec(GB);
+        let mut result = mk_vec(SIZE);
         b.iter(|| {
-            for i in 0..GB {
+            for i in 0..SIZE {
                 result[i] = v1[i] ^ v2[i];
             }
             black_box(&result);
@@ -23,13 +25,13 @@ fn bench_xor(c: &mut Criterion) {
     });
 
     g.bench_function("naive-bounded", |b| {
-        let mut result = mk_vec(GB);
+        let mut result = mk_vec(SIZE);
         b.iter(|| {
-            let res = &mut result[0..GB];
-            let a = &v1[0..GB];
-            let b = &v2[0..GB];
+            let res = &mut result[0..SIZE];
+            let a = &v1[0..SIZE];
+            let b = &v2[0..SIZE];
 
-            for i in 0..GB {
+            for i in 0..SIZE {
                 res[i] = b[i] ^ a[i];
             }
 
@@ -38,13 +40,13 @@ fn bench_xor(c: &mut Criterion) {
     });
 
     g.bench_function("naive-assert", |b| {
-        let mut result = mk_vec(GB);
+        let mut result = mk_vec(SIZE);
         b.iter(|| {
-            assert!(result.len() <= GB);
-            assert!(v1.len() <= GB);
-            assert!(v2.len() <= GB);
+            assert!(result.len() <= SIZE);
+            assert!(v1.len() <= SIZE);
+            assert!(v2.len() <= SIZE);
 
-            for i in 0..GB {
+            for i in 0..SIZE {
                 result[i] = v1[i] ^ v2[i];
             }
             black_box(&result);
@@ -52,19 +54,19 @@ fn bench_xor(c: &mut Criterion) {
     });
 
     g.bench_function("naive-assume", |b| {
-        let mut result = mk_vec(GB);
+        let mut result = mk_vec(SIZE);
         b.iter(|| {
             unsafe {
-                std::intrinsics::assume(result.len() == GB);
-                std::intrinsics::assume(v1.len() == GB);
-                std::intrinsics::assume(v2.len() == GB);
+                std::intrinsics::assume(result.len() == SIZE);
+                std::intrinsics::assume(v1.len() == SIZE);
+                std::intrinsics::assume(v2.len() == SIZE);
             }
 
-            for i in 0..GB {
+            for i in 0..SIZE {
                 unsafe {
-                    std::intrinsics::assume(result.len() == GB);
-                    std::intrinsics::assume(v1.len() == GB);
-                    std::intrinsics::assume(v2.len() == GB);
+                    std::intrinsics::assume(i < result.len());
+                    std::intrinsics::assume(i < v1.len());
+                    std::intrinsics::assume(i < v2.len());
                 }
                 result[i] = v1[i] ^ v2[i];
             }
@@ -75,7 +77,7 @@ fn bench_xor(c: &mut Criterion) {
     g.bench_function("chunks-exact", |b| {
         const CHUNK_SIZE: usize = 64;
 
-        let mut result = mk_vec(GB);
+        let mut result = mk_vec(SIZE);
         b.iter(|| {
             for (r, (a, b)) in result
                 .chunks_exact_mut(CHUNK_SIZE)
@@ -91,9 +93,9 @@ fn bench_xor(c: &mut Criterion) {
     });
 
     g.bench_function("unchecked", |b| {
-        let mut result = mk_vec(GB);
+        let mut result = mk_vec(SIZE);
         b.iter(|| {
-            for i in 0..GB {
+            for i in 0..SIZE {
                 unsafe {
                     *result.get_unchecked_mut(i) = v1.get_unchecked(i) ^ v2.get_unchecked(i);
                 }
@@ -103,13 +105,13 @@ fn bench_xor(c: &mut Criterion) {
     });
 
     g.bench_function("u64", |b| {
-        let mut result = mk_vec(GB);
+        let mut result = mk_vec(SIZE);
         b.iter(|| {
             unsafe {
                 let result_as_u64_slice: &mut Vec<u64> = std::mem::transmute(&mut result);
                 let v1_as_u64_slice: &Vec<u64> = std::mem::transmute(&v1);
                 let v2_as_u64_slice: &Vec<u64> = std::mem::transmute(&v2);
-                for i in 0..GB / 8 {
+                for i in 0..SIZE / 8 {
                     *result_as_u64_slice.get_unchecked_mut(i) =
                         v1_as_u64_slice.get_unchecked(i) ^ v2_as_u64_slice.get_unchecked(i);
                 }
@@ -119,13 +121,13 @@ fn bench_xor(c: &mut Criterion) {
     });
 
     g.bench_function("u128", |b| {
-        let mut result = mk_vec(GB);
+        let mut result = mk_vec(SIZE);
         b.iter(|| {
             unsafe {
                 let result_as_u128_slice: &mut Vec<u128> = std::mem::transmute(&mut result);
                 let v1_as_u128_slice: &Vec<u128> = std::mem::transmute(&v1);
                 let v2_as_u128_slice: &Vec<u128> = std::mem::transmute(&v2);
-                for i in 0..GB / 16 {
+                for i in 0..SIZE / 16 {
                     *result_as_u128_slice.get_unchecked_mut(i) =
                         v1_as_u128_slice.get_unchecked(i) ^ v2_as_u128_slice.get_unchecked(i);
                 }
@@ -135,7 +137,7 @@ fn bench_xor(c: &mut Criterion) {
     });
 
     g.bench_function("packed_simd::u64x8", |b| {
-        let mut result = mk_vec(GB);
+        let mut result = mk_vec(SIZE);
         b.iter(|| {
             unsafe {
                 let result_as_u64_slice: &mut Vec<u64> = std::mem::transmute(&mut result);
@@ -144,7 +146,7 @@ fn bench_xor(c: &mut Criterion) {
                 let mut offset = 0;
 
                 loop {
-                    if offset >= GB / 8 {
+                    if offset >= SIZE / 8 {
                         break;
                     }
 
@@ -182,7 +184,7 @@ fn bench_xor(c: &mut Criterion) {
     });
 
     g.bench_function("packed_simd::u64x4", |b| {
-        let mut result = mk_vec(GB);
+        let mut result = mk_vec(SIZE);
         b.iter(|| unsafe {
             let result_as_u64_slice: &mut Vec<u64> = std::mem::transmute(&mut result);
             let v1_as_u64_slice: &Vec<u64> = std::mem::transmute(&v1);
@@ -190,7 +192,7 @@ fn bench_xor(c: &mut Criterion) {
             let mut offset = 0;
 
             loop {
-                if offset >= GB / 8 {
+                if offset >= SIZE / 8 {
                     break;
                 }
 
@@ -219,12 +221,12 @@ fn bench_xor(c: &mut Criterion) {
     });
 
     g.bench_function("packed_simd::u8x64", |b| {
-        let mut result = mk_vec(GB);
+        let mut result = mk_vec(SIZE);
 
         b.iter(|| unsafe {
             let mut offset = 0;
             loop {
-                if offset >= GB {
+                if offset >= SIZE {
                     break;
                 }
 
@@ -373,7 +375,7 @@ fn bench_xor(c: &mut Criterion) {
     });
 
     g.bench_function("ppv_lite85", |b| {
-        let mut result = mk_vec(GB);
+        let mut result = mk_vec(SIZE);
         b.iter(|| {
             let mut offset = 0;
             // let result_raw_ptr = result.as_mut_ptr();
@@ -381,7 +383,7 @@ fn bench_xor(c: &mut Criterion) {
             // let v2_raw_ptr = v2.as_ptr();
 
             loop {
-                if offset >= GB {
+                if offset >= SIZE {
                     break;
                 }
 

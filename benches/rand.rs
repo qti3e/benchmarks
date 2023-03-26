@@ -1,7 +1,6 @@
 use benchmarks::*;
 use criterion::*;
 use rand::{RngCore, SeedableRng};
-use std::arch::aarch64 as arch;
 
 fn bench_rand(c: &mut Criterion) {
     let mut g = c.benchmark_group("Rand");

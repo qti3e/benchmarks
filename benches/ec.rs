@@ -409,6 +409,14 @@ fn bench_ec(c: &mut Criterion) {
         })
     });
 
+    // g.bench_function(BenchmarkId::new("Add", "blst/G1"), |b| unsafe {
+    //     let g = blst::BLS12_381_G1;
+    //     b.iter(|| {
+    //         let r = u + g;
+    //         let _ = black_box(r);
+    //     })
+    // });
+
     // ---- To Affine
 
     g.bench_function(BenchmarkId::new("ToAffine", "ark-secp256k1"), |b| {
@@ -593,6 +601,18 @@ fn bench_ec(c: &mut Criterion) {
 
         b.iter(|| {
             let r = bls12_381::pairing(&g, &u);
+            let _ = black_box(r);
+        })
+    });
+
+    g.bench_function(BenchmarkId::new("Pairing", "blst"), |b| {
+        let g = unsafe { blst::BLS12_381_G1 };
+        let u = unsafe { blst::BLS12_381_G2 };
+
+        b.iter(|| {
+            let mut pairing = blst::Pairing::new(false, &[]);
+            pairing.raw_aggregate(&u, &g);
+            let r = pairing.as_fp12();
             let _ = black_box(r);
         })
     });
