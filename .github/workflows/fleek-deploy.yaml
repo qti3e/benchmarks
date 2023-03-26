@@ -15,12 +15,15 @@ jobs:
           node-version: 16
       - name: Install Fleek CLI
         run: npm i -g @fleekxyz/cli
-      - name: Install minimal stable with clippy and rustfmt
+      - name: Install latest nightly
         uses: actions-rs/toolchain@v1
         with:
-          profile: minimal
-          toolchain: nightly
-      - name: Run benchmarks
-        run: cargo bench
+            toolchain: nightly
+            profile: minimal
+            override: true
+      - name: Run cargo bench
+        uses: actions-rs/cargo@v1
+        with:
+          command: bench
       - name: Build & deploy sites
         run: fleek sites deploy
