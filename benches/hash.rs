@@ -3,12 +3,12 @@ use criterion::*;
 use sha2::{Digest, Sha256, Sha384, Sha512};
 
 fn bench_hash(c: &mut Criterion) {
-    let data = random_vec(GB);
+    let data = random_vec(10 * MB);
 
     let mut g = c.benchmark_group("Hash");
     g.sample_size(10);
 
-    for (size, label) in size(GB) {
+    for (size, label) in size(10 * MB) {
         g.throughput(Throughput::Bytes(size as u64));
 
         g.bench_with_input(BenchmarkId::new("Sha256", &label), &size, |b, i| {

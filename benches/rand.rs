@@ -6,7 +6,7 @@ fn bench_rand(c: &mut Criterion) {
     let mut g = c.benchmark_group("Rand");
     g.sample_size(20);
 
-    for (size, label) in size(GB) {
+    for (size, label) in size(10 * MB) {
         g.throughput(Throughput::Bytes(size as u64));
 
         g.bench_with_input(BenchmarkId::new("OsRng", &label), &size, |b, &size| {
