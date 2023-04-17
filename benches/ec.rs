@@ -104,6 +104,15 @@ fn bench_ec(c: &mut Criterion) {
         })
     });
 
+    g.bench_function(BenchmarkId::new("Mul", "alkali/ed25519"), |b| {
+        let n = alkali::curve::ed25519::Scalar::generate().unwrap();
+
+        b.iter(|| {
+            let r = alkali::curve::ed25519::scalar_mult_base(&n).unwrap();
+            let _ = black_box(r);
+        })
+    });
+
     // ---- Mul Projective
 
     g.bench_function(BenchmarkId::new("Mul", "ark-secp256k1/Projective"), |b| {
@@ -409,13 +418,18 @@ fn bench_ec(c: &mut Criterion) {
         })
     });
 
-    // g.bench_function(BenchmarkId::new("Add", "blst/G1"), |b| unsafe {
-    //     let g = blst::BLS12_381_G1;
-    //     b.iter(|| {
-    //         let r = u + g;
-    //         let _ = black_box(r);
-    //     })
-    // });
+    g.bench_function(BenchmarkId::new("Add", "alkali/ed25519"), |b| {
+        let n = alkali::curve::ed25519::Scalar::generate().unwrap();
+        let q = alkali::curve::ed25519::scalar_mult_base(&n).unwrap();
+
+        let n = alkali::curve::ed25519::Scalar::generate().unwrap();
+        let p = alkali::curve::ed25519::scalar_mult_base(&n).unwrap();
+
+        b.iter(|| {
+            let r = q.add(&p);
+            let _ = black_box(r);
+        })
+    });
 
     // ---- To Affine
 
