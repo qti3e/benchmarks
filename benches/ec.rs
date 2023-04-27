@@ -12,6 +12,7 @@ use ff::Field as ff13Field;
 fn bench_mul(c: &mut Criterion) {
     let mut g = c.benchmark_group("EC::Point::Mul");
     g.sample_size(10);
+    g.throughput(Throughput::Elements(1));
 
     g.bench_function("ark-secp256k1", |b| {
         let s = ark_secp256k1::Fr::rand(&mut OsRng);
@@ -348,7 +349,7 @@ fn bench_mul(c: &mut Criterion) {
 }
 
 fn bench_add(c: &mut Criterion) {
-    let mut g = c.benchmark_group("EC::Point::Mul");
+    let mut g = c.benchmark_group("EC::Point::Add");
     g.sample_size(10);
 
     g.bench_function("ark-secp256k1", |b| {
@@ -512,8 +513,9 @@ fn bench_add(c: &mut Criterion) {
 fn bench_to_affine(c: &mut Criterion) {
     let mut g = c.benchmark_group("EC::Point::ToAffine");
     g.sample_size(10);
+    g.throughput(Throughput::Elements(1));
 
-    g.bench_function(BenchmarkId::new("ToAffine", "ark-secp256k1"), |b| {
+    g.bench_function("ark-secp256k1", |b| {
         let s = ark_secp256k1::Fr::rand(&mut OsRng);
         let g = ark_secp256k1::Affine::generator();
         let u = g.mul(s);
@@ -524,7 +526,7 @@ fn bench_to_affine(c: &mut Criterion) {
         })
     });
 
-    g.bench_function(BenchmarkId::new("ToAffine", "ark-secp256r1"), |b| {
+    g.bench_function("ark-secp256r1", |b| {
         let s = ark_secp256r1::Fr::rand(&mut OsRng);
         let g = ark_secp256r1::Affine::generator();
         let u = g.mul(s);
@@ -535,7 +537,7 @@ fn bench_to_affine(c: &mut Criterion) {
         })
     });
 
-    g.bench_function(BenchmarkId::new("ToAffine", "ark-curve25519"), |b| {
+    g.bench_function("ark-curve25519", |b| {
         let s = ark_curve25519::Fr::rand(&mut OsRng);
         let g = ark_curve25519::EdwardsAffine::generator();
         let u = g.mul(s);
@@ -546,7 +548,7 @@ fn bench_to_affine(c: &mut Criterion) {
         })
     });
 
-    g.bench_function(BenchmarkId::new("ToAffine", "ark-bls12-381/G1"), |b| {
+    g.bench_function("ark-bls12-381/G1", |b| {
         let s = ark_bls12_381::Fr::rand(&mut OsRng);
         let g = ark_bls12_381::G1Affine::generator();
         let u = g.mul(s);
@@ -557,7 +559,7 @@ fn bench_to_affine(c: &mut Criterion) {
         })
     });
 
-    g.bench_function(BenchmarkId::new("ToAffine", "ark-bls12-381/G2"), |b| {
+    g.bench_function("ark-bls12-381/G2", |b| {
         let s = ark_bls12_381::Fr::rand(&mut OsRng);
         let g = ark_bls12_381::G2Affine::generator();
         let u = g.mul(s);
@@ -568,7 +570,7 @@ fn bench_to_affine(c: &mut Criterion) {
         })
     });
 
-    g.bench_function(BenchmarkId::new("ToAffine", "k256"), |b| {
+    g.bench_function("k256", |b| {
         let s = k256::Scalar::random(&mut OsRng);
         let u = k256::AffinePoint::GENERATOR.mul(s);
 
@@ -578,7 +580,7 @@ fn bench_to_affine(c: &mut Criterion) {
         })
     });
 
-    g.bench_function(BenchmarkId::new("ToAffine", "p256"), |b| {
+    g.bench_function("p256", |b| {
         let s = p256::Scalar::random(&mut OsRng);
         let u = p256::AffinePoint::GENERATOR.mul(s);
 
@@ -588,7 +590,7 @@ fn bench_to_affine(c: &mut Criterion) {
         })
     });
 
-    g.bench_function(BenchmarkId::new("ToAffine", "bls12-381/G1"), |b| {
+    g.bench_function("bls12-381/G1", |b| {
         let s = bls12_381::Scalar::random(&mut OsRng);
         let u = bls12_381::G1Affine::generator().mul(s);
 
@@ -598,7 +600,7 @@ fn bench_to_affine(c: &mut Criterion) {
         })
     });
 
-    g.bench_function(BenchmarkId::new("ToAffine", "bls12-381/G2"), |b| {
+    g.bench_function("bls12-381/G2", |b| {
         let s = bls12_381::Scalar::random(&mut OsRng);
         let u = bls12_381::G2Affine::generator().mul(s);
 
@@ -612,6 +614,7 @@ fn bench_to_affine(c: &mut Criterion) {
 fn bench_pedersen(c: &mut Criterion) {
     let mut g = c.benchmark_group("EC::Point::Pedersen");
     g.sample_size(10);
+    g.throughput(Throughput::Elements(1));
 
     g.bench_function("ark-secp256k1", |b| {
         let s = ark_secp256k1::Fr::rand(&mut OsRng);
@@ -714,6 +717,7 @@ fn bench_pedersen(c: &mut Criterion) {
 fn bench_bls_pairing(c: &mut Criterion) {
     let mut g = c.benchmark_group("EC::Point::Pairing");
     g.sample_size(10);
+    g.throughput(Throughput::Elements(1));
 
     g.bench_function("ark-bls12-381", |b| {
         let s = ark_bls12_381::Fr::rand(&mut OsRng);
